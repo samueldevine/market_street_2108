@@ -89,7 +89,11 @@ RSpec.describe do
 
     it '#units_by_number_of_bedrooms' do
       @building.add_unit(@unit4)
-      result = {3 => ["D4"], 2 => ["B2", "C3"], 1 => ["A1"]}
+      result = {
+        3 => ["D4"],
+        2 => ["B2", "C3"],
+        1 => ["A1"]
+      }
 
       expect(@building.units_by_number_of_bedrooms).to eq result
     end

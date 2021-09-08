@@ -2,7 +2,7 @@ class Building
   attr_reader :units
 
   def initialize
-    @units    = []
+    @units = []
   end
 
   def add_unit(unit)
@@ -10,53 +10,40 @@ class Building
   end
 
   def renters
-    rented_units.map do |unit|
-      unit.renter.name
-    end
+    @units.map do |unit|
+      unit.renter_name
+    end.compact
   end
 
   def average_rent
-    sum = 0
-
-    @units.each do |unit|
-      sum += unit.monthly_rent
-    end
-
-    sum.to_f / @units.size
-  end
-
-  def rented_units
-    if @units.nil?
-      rented_units = []
-    else
-      @units.compact!
-      rented_units = @units.map do |unit|
-        if unit.renter != nil
-          unit
-        end
-      end
-    end
-    rented_units.compact
-  end
-
-  def renter_with_highest_rent
-    most_expensive_occupied_unit = rented_units.max_by do |unit|
+    sum = @units.sum do |unit|
       unit.monthly_rent
     end
 
-    most_expensive_occupied_unit.renter
+    sum.to_f / @units.count
   end
 
+  def rented_units
+    @units.find_all do |unit|
+      unit.renter
+    end
+  end
 
+  def renter_with_highest_rent
+    rented_units.max_by do |unit|
+      unit.monthly_rent
+    end.renter
+  end
 
   def units_by_number_of_bedrooms
     units_by_bedrooms = {}
 
     @units.each do |unit|
       if units_by_bedrooms[unit.bedrooms].nil?
-        units_by_bedrooms[unit.bedrooms] = []
+        units_by_bedrooms[unit.bedrooms] = [unit.number]
+      else
+        units_by_bedrooms[unit.bedrooms] << unit.number
       end
-      units_by_bedrooms[unit.bedrooms] << unit.number
     end
 
     units_by_bedrooms
